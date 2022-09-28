@@ -8,6 +8,7 @@ from ldclient.config import Config
 import logging
 import os
 import eventlet
+import uuid
 from dotenv import load_dotenv, find_dotenv
 eventlet.monkey_patch()
 
@@ -28,6 +29,9 @@ fallback = '{"dbinfo":"localhost","dbname":"localdb"}'
 user = {
     "key": "anonymous"
 }
+ldclient.set_config(Config(LD_KEY))
+logstatus = ldclient.get().variation('logMode', user, 'default')
+
 
 @app.route('/')
 def default_path():
@@ -67,7 +71,7 @@ def users():
     ldclient.get().identify(user)
     logstatus = ldclient.get().variation('logMode', user, 'default')
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
-    if dbinfo['dbhost'] == 'localhost':
+    if dbinfo['dbhost'] == 'db':
         data = {
             'user': 'cody',
         }
@@ -103,6 +107,17 @@ def users():
             cur.execute('SELECT * FROM users ORDER BY id')
             ret = cur.fetchall()
             return jsonify(ret)
+
+@app.route("/teamdebug")
+def teamdebug():
+    teamid = request.args.get("TEAM_ID")
+    teamval = {
+        "id": str(uuid.uuid1()),
+        "teamid": teamid
+    }
+    if logstatus == "debug":
+        print(teamval)
+    return jsonify(teamval)
    
 
 @app.after_request

@@ -6,13 +6,14 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import toast, { Toaster } from "react-hot-toast";
 import Banner from "../components/banner.js";
 import Preview from "../components/preview.js";
+import Herotext from "../components/herotext.js";
 
 export default function Home() {
   // Feature flags that are created and managed in LaunchDarkly
-  const { siteRelease, apiConfig } = useFlags();
+  const { siteRelease, logMode } = useFlags();
   //
   return (
-    <div className="h-screen bg-ld-ls-wide bg-no-repeat bg-center bg-cover">
+    <div className="h-screen bg-ld-ls bg-no-repeat bg-center bg-cover">
       <Head>
         <title>UnicornRentals</title>
         <meta name="description" content="Built for exploring LaunchDarkly" />
@@ -58,9 +59,12 @@ export default function Home() {
         <div className="grid col-span-4 row-start-1  h-2/3 items-center">
           <Banner />
         </div>
+        <div className="grid col-start-2 col-span-3 row-start-2 items-center ">
+            <Herotext />
+        </div>
         {/* We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection */}
-        {apiConfig ? (
-          <div className="grid col-span-4 row-start-2 lg:col-start-2 lg:col-span-3 lg:row-start-3 justify-center items-center lg:w-full">
+        {logMode == 'debug' ? (
+          <div className="grid col-span-4 row-start-2 lg:col-start-1 lg:col-span-1 lg:row-start-3 justify-center items-center lg:w-full">
             <Connection />
           </div>
         ) : null}

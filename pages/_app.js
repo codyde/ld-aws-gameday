@@ -7,6 +7,7 @@ import ls from 'local-storage';
 
 function getUserId() {
   let id;
+  console.log(process.env.NEXT_PUBLIC_LD_CLIENT_KEY)
   if (ls.get('LD_User_Key')) {
     id = ls.get('LD_User_Key');
   } else {
@@ -24,7 +25,7 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default withLDProvider({
-  clientSideID: process.env.LD_CLIENT_KEY,
+  clientSideID: process.env.NEXT_PUBLIC_LD_CLIENT_KEY,
   user: {
     key: id,
     custom: {

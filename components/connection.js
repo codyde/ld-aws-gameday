@@ -10,6 +10,7 @@ export default function Connection() {
   const [loc1, setloc1] = useState("INACTIVE");
   const [api1, setapi1] = useState("bg-ldred");
   const [api1loc, setapi1loc] = useState("UNKNOWN");
+  const [debugid, setdebugid] = useState("UNKNOWN")
 
 
   async function setID(){
@@ -33,6 +34,15 @@ export default function Connection() {
     }
   }
 
+  async function queryTeamDebug() {
+    let tid = process.env.NEXT_PUBLIC_TEAM_ID
+    const DEBUGENDPOINT =
+    window.location.protocol + "//" + window.location.host + "/teamdebug?TEAM_ID="+tid;
+    const response = await fetch(DEBUGENDPOINT);
+    const data = await response.json();
+    setdebugid(data.id);
+  }
+
   useEffect(() => {
     if (dbDetails) {
       console.log("RDS online");
@@ -46,6 +56,11 @@ export default function Connection() {
   useEffect(() => {
     console.log("update to key detected")
   }, [userkey])
+
+  useEffect(() => {
+    queryTeamDebug()
+    console.log("Team Debug ID is ")
+  }, [])
 
   return (
     <div className="flex mx-auto w-full space-x-4">
@@ -62,6 +77,9 @@ export default function Connection() {
           </div>
           <div className="grid mx-auto py-4">
             <Modal dbDetails={dbDetails} />
+          </div>
+          <div>
+          <p className="text-center mx-auto text-white text-xl">Debug ID for team is {debugid.toUpperCase()}</p>
           </div>
         </div>
       </div>
