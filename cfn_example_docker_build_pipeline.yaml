@@ -7,18 +7,131 @@ Parameters:
   StaticAssetsBucket:
     Type: String
     Description: (Optional) Bucket for static assets that live outside of the pipeline (e.g. data for seeding)
-    Default: 'gameday-codecommit-ld'
+    Default: 'gameday-codecommit'
   # StaticAssetsKeyPrefix:
   #   Type: String
   #   Description: (Optional) Bucket prefix for static assets that live outside of the pipeline (e.g. data for seeding)
   #   Default: ''
-
   TeamWorkerSourceKey:
-    Default: aws_gameday_api.zip
+    Default: Archive.zip
     Description: S3 key for the dummy zip file containing the buildspec_prod.yml and dockerfile
+    Type: String
+  LaunchDarklyClientKey:
+    Default: '633b74a2fe345710e2d19def'
+    Description: Client SDK Key for LaunchDarkly configuration
+    Type: String
+  LaunchDarklyServerKey:
+    Default: 'sdk-64c0dc04-2f47-4843-a0dd-05ca5bd5b849'
+    Description: Server SDK Key for LaunchDarkly configuration
+    Type: String
+  TeamName:
+    Default: '1'
+    Description: AWS Gameday Table Number
     Type: String
 
 Resources:
+
+  LambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+            - sts:AssumeRole
+        Path: "/"
+        Policies:
+          - PolicyName: dynamodbAccessRole
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: Allow
+                Action:
+                - dynamodb:*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                - logs:*
+                Resource: "*"
+
+  InitFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: |
+          import boto3 
+          import os
+          import cfnresponse
+
+          dynamodb = boto3.resource('dynamodb'
+          table = dynamodb.Table('GamedayDB')
+
+          def handler(event, context):
+            data = table.put_item(
+            TableName='GamedayDB',
+            Item={
+                'teamid': '1',
+                'debugcode': 'pants',
+                'teamval': '123-abc'
+                }
+            )
+            data2 = table.put_item(
+            TableName='GamedayDB',
+            Item={
+                'teamid': '2',
+                'title1':'Unicorn with Confidence',
+                'text1':'Because you can always be confident when Unicorn.Rentals is providing your Unicorn.',
+                'title2':'Mythically Reliabile',
+                'text2':'If you can't trust that your Unicorn is going to be available when you ask for it, what can you really trust in this world?',
+                'title3':'Automagic Unicornation',
+                'text3':'The Unicorn is neither missing nor present. Its Automagic. It arrives when it needs to be there, and not a second before.',
+                }
+            )
+
+            response = {
+              'statusCode': 200,
+              'body': 'successfully created items!',
+              'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+              },
+            }
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, response) 
+      Environment:
+        Variables:
+          id: !Ref TeamName
+      Handler: index.handler
+      Role:
+        Fn::GetAtt: [ LambdaRole , "Arn" ]
+      Runtime: python3.9
+      Timeout: 60
+    DependsOn: GamedayDB
+
+  Primerinvoke:
+    Type: AWS::CloudFormation::CustomResource
+    DependsOn: InitFunction
+    Version: "1.0"
+    Properties:
+      ServiceToken: !GetAtt InitFunction.Arn
+
+  GamedayDB:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: GamedayDB
+      AttributeDefinitions:
+        - AttributeName: teamid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: teamid
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+    DependsOn: PipelineCloudWatchEventRole
 
   # CodeBuild needs a place to put artifacts in the interim.
   CodePipelineArtifactBucket:
@@ -40,7 +153,6 @@ Resources:
           - ''
           # - - !Ref StaticAssetsKeyPrefix
           - - !Ref TeamWorkerSourceKey
-    #DependsOn: PipelineInit
 
   DockerBuildCodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -62,8 +174,47 @@ Resources:
           - Name: REPOSITORY_URI
             Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${MyAppImage}
             Type: PLAINTEXT
+          - Name: NEXT_PUBLIC_LD_CLIENT_KEY
+            Value: !Ref LaunchDarklyClientKey
+            Type: PLAINTEXT
+          - Name: LD_SERVER_KEY
+            Value: !Ref LaunchDarklyServerKey
+            Type: PLAINTEXT
+          - Name: NEXT_PUBLIC_TEAM_ID
+            Value: !Ref TeamName
+            Type: PLAINTEXT
       Name: !Sub ${AWS::StackName}-image-build
       ServiceRole: !Ref CodePipelineServiceRole
+
+  # AppRunnerCanaryService:
+  #   Type: AWS::AppRunner::Service
+  #   Properties:
+  #     SourceConfiguration:
+  #       AuthenticationConfiguration:
+  #           AccessRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/service-role/AppRunnerECRAccessRole
+  #       ImageRepository:
+  #         ImageRepositoryType: "ECR"
+  #         ImageIdentifier: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${MyAppImage}:latest
+  #         ImageConfiguration:
+  #           Port: "5000"
+  #           RuntimeEnvironmentVariables:
+  #             -
+  #               Name: LD_SERVER_KEY
+  #               Value: !Ref LaunchDarklyServerKey
+  #             - Name: NEXT_PUBLIC_TEAM_ID
+  #               Value: !Ref TeamName
+  #       AutoDeploymentsEnabled: false
+  #     HealthCheckConfiguration:
+  #       Protocol: "TCP"
+  #       Interval: "2"
+  #       Path: '/'
+  #       Timeout: "5"
+  #       HealthyThreshold: "1"
+  #       UnhealthyThreshold: "5"
+  #     InstanceConfiguration:
+  #       Cpu: "1024"
+  #       Memory: "2048"
+  #   DependsOn: WaitCondition
 
 
   MyAppPipeline:

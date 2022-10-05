@@ -16,6 +16,16 @@ export default function Modal(code) {
     return id
   }
 
+  const debugData = [{
+    id: "1",
+    data: "DEBUG-EMPTY",
+  },
+  {
+    id: "2",
+    data: "DEBUG-ALSO-EMPTY",
+  }]
+  
+
   useEffect(() => {
     console.log("update to key detected")
   }, [userkey])
@@ -28,11 +38,18 @@ export default function Modal(code) {
           "//" +
           window.location.host +
           "/users?LD_USER_KEY="+id)
+        console.log(response.status)
+        if (response.status != 200) {
+          const data = debugData
+          setQuery(data)
+          return data
+        } else {
         const data = await response.text()
         console.log(data)
         setQuery(data)+
         console.log(query)
         return data
+      }
     }
 
     React.useEffect(() => {

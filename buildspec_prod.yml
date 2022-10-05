@@ -21,6 +21,9 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - echo docker build -t $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - sed -i "s/LDSERVERSDK/LD_SERVER_KEY/g" .env
+      - sed -i "s/LDCLIENTSDK/$NEXT_PUBLIC_LD_CLIENT_KEY/g" .env
+      - sed -i "s/GDTEAM/$NEXT_PUBLIC_TEAM_ID/g" .env
       - docker build -t $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
   post_build:
     commands:

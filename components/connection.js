@@ -40,12 +40,12 @@ export default function Connection() {
     window.location.protocol + "//" + window.location.host + "/teamdebug?TEAM_ID="+tid;
     const response = await fetch(DEBUGENDPOINT);
     const data = await response.json();
-    setdebugid(data.id);
+    setdebugid(data.debugcode);
   }
 
   useEffect(() => {
     if (dbDetails) {
-      console.log("RDS online");
+      console.log("Migrated DB online");
     } else {
       console.log("Local DB");
     }
@@ -59,7 +59,7 @@ export default function Connection() {
 
   useEffect(() => {
     queryTeamDebug()
-    console.log("Team Debug ID is ")
+    // console.log("Team Debug ID is ")
   }, [])
 
   return (
@@ -69,9 +69,10 @@ export default function Connection() {
       >
         <div>
           <h1 className="text-center font-bold text-ldgraytext text-base lg:text-4xl">
-            Connected to the{" "}
-            <span className="text-ldred">{api1loc.toUpperCase()}</span> Database
+            The most secret DEBUG view
           </h1>
+          <p className="text-center text-white">Connected to the{" "}
+            <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
           <div className={`overflow-hidden h-8 flex px-8 pb-4 ${api1}`}>
             <p className="mx-auto text-black text-xl">{loc1.toUpperCase()}</p>
           </div>

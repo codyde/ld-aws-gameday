@@ -9,10 +9,8 @@ import logging
 import os
 import eventlet
 import uuid
-from dotenv import load_dotenv, find_dotenv
+import boto3
 eventlet.monkey_patch()
-
-load_dotenv(find_dotenv())
 
 
 app = Flask(__name__, static_url_path='',
@@ -22,7 +20,7 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.config['DEBUG'] = True
 
 
-LD_KEY = os.getenv('LD_SERVER_KEY')
+LD_KEY = os.environ.get('LD_SERVER_KEY')
 
 fallback = '{"dbinfo":"localhost","dbname":"localdb"}'
 
@@ -47,77 +45,129 @@ def get_api():
     ldclient.get().identify(user)
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
     print(user)
-    if dbinfo['mode'] == "RDS":
+    if dbinfo['mode'] == "Cloud":
         stats = {
             'version': '2',
-            'status': 'healthy',
-            'location': 'RDS'
+            'status': 'Healthy - Migration Successful',
+            'location': 'Cloud'
         }
         
     else:
         stats = {
             'version': '1',
-            'status': 'healthy',
-            'location': 'Local'
+            'status': 'unhealthy',
+            'location': 'DebugData'
         }
     return jsonify(stats)
 
-@app.route("/users", methods=["GET", "POST"])
-def users():
+@app.route("/datas", methods=["GET", "POST"])
+def thedata():
     ldclient.set_config(Config(LD_KEY))
     user = {
         "key": request.args.get('LD_USER_KEY')
     }
     ldclient.get().identify(user)
-    logstatus = ldclient.get().variation('logMode', user, 'default')
-    dbinfo = ldclient.get().variation('dbDetails', user, fallback)
-    if dbinfo['dbhost'] == 'db':
-        data = {
-            'user': 'cody',
+
+    ############################################################################################
+    #                                                                                          #
+    #                                                                                          #
+    #             Code for implementing a database read feature flag is below                  #
+    #                                                                                          #
+    #                                                                                          #
+    ############################################################################################
+
+    # dbinfo = ldclient.get().variation('dbDetails', user, fallback)
+    # if dbinfo['dbhost'] == 'db':
+    #     dummyData = [(
+    #         {
+    #             "id":1,
+    #             "title":"Debug Ipsum 1",
+    #             "text":"This is our debug text. Charlie ate the last candy bar."
+    #         },
+    #         {
+    #             "id":2,
+    #             "title":"Debug Ipsum 2",
+    #             "text":"We're debugging all the Unicorns. They are trampling our code."
+    #         },
+    #         {
+    #             "id":3,
+    #             "title":"Debug Ipsum 3",
+    #             "text":"Will it ever end? Speculation is nay. It likely won't."
+    #         }
+    #     )]
+    #     return jsonify(dummyData)
+    # else:
+    #     dynamodb = boto3.resource('dynamodb')
+    #     table = dynamodb.Table('GamedayDB')
+    #     data = table.get_item(Key={'teamid': '2'})
+    #     realData = [(
+    #         {
+    #             "id":1,
+    #             "title":data['Items']['title1'],
+    #             "text":data['Items']['text1']
+    #         },
+    #         {
+    #             "id":1,
+    #             "title":data['Items']['title2'],
+    #             "text":data['Items']['text2']
+    #         },
+    #         {
+    #             "id":1,
+    #             "title":data['Items']['title3'],
+    #             "text":data['Items']['text3']
+    #         }
+    #     )]
+    #     return jsonify(realData)
+
+    ############################################################################################
+    #                                                                                          #
+    #                                                                                          #
+    #                            End New Database Code                                         #
+    #                                                                                          #
+    #                                                                                          #
+    ############################################################################################ 
+
+    ## When we deploy the prod code - comment out this dummydata debuggin section 
+    ## and use the flag conditionals above 
+    dummyData = [(
+        {
+            "id":1,
+            "title":"Debug Ipsum 1",
+            "text":"This is our debug text. Charlie ate the last candy bar."
+        },
+        {
+            "id":2,
+            "title":"Debug Ipsum 2",
+            "text":"We're debugging all the Unicorns. They are trampling our code."
+        },
+        {
+            "id":3,
+            "title":"Debug Ipsum 3",
+            "text":"Will it ever end? Speculation is nay. It likely won't."
         }
-        return jsonify(data)
-    else:
-        conn = psycopg2.connect(f"host={dbinfo['dbhost']} port=5432 \
-                dbname={dbinfo['dbname']} user=postgres password=postgres_password \
-                sslmode=disable")
-        if request.method == "GET":
-            print(logstatus)
-            if logstatus == 'default':
-                app.logger.debug(logstatus+" log level running")
-            elif logstatus == 'debug':
-                app.logger.debug("log level is "+logstatus)
-            else:
-                app.logger.debug("some other log level")
-            cur = conn.cursor(cursor_factory=RealDictCursor)
-            cur.execute('SELECT * FROM users ORDER BY id')
-            ret = cur.fetchall()
-            return jsonify(ret)
-        if request.method == "POST":
-            val = request.get_json()
-            print(val)
-            cur = conn.cursor()
-            migrate = ldclient.get().variation('dbmigrate', user, False)
-            if migrate == True:
-                cur.execute("INSERT INTO users (username, location) \
-                    VALUES (%s,%s)", (val['username'],val['location']))
-            else:
-                cur.execute("INSERT INTO users (username) \
-                    VALUES (%s)", (val['username'],))
-            conn.commit()
-            cur.execute('SELECT * FROM users ORDER BY id')
-            ret = cur.fetchall()
-            return jsonify(ret)
+        )]
+    return dummyData
+    ## Comment out above this line 
 
 @app.route("/teamdebug")
 def teamdebug():
-    teamid = request.args.get("TEAM_ID")
-    teamval = {
-        "id": str(uuid.uuid1()),
-        "teamid": teamid
-    }
     if logstatus == "debug":
-        print(teamval)
-    return jsonify(teamval)
+        teamid = os.environ.get("NEXT_PUBLIC_TEAM_ID")
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('GamedayDB')
+        data = table.get_item(Key={'teamid': str(teamid)})
+        teamval = {
+            "teamid": teamid,
+            "loglevel": logstatus,
+            "debugcode": data['Item']['debugcode']
+        }
+        return jsonify(teamval)
+    else:
+        data = {
+            "loglevel": logstatus,
+            "message": "Logging is currently in default mode. No debug data available. Have you checked LaunchDarkly?"
+        }
+        return jsonify(data)
    
 
 @app.after_request

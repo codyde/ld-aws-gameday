@@ -7,6 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Banner from "../components/banner.js";
 import Preview from "../components/preview.js";
 import Herotext from "../components/herotext.js";
+import Grid from "../components/grid.js";
 
 export default function Home() {
   // Feature flags that are created and managed in LaunchDarkly
@@ -61,6 +62,9 @@ export default function Home() {
         </div>
         <div className="grid col-start-2 col-span-3 row-start-2 items-center ">
             <Herotext />
+        </div>
+        <div className="grid col-span-4 row-start-2 lg:col-start-2 lg:col-span-3 lg:row-start-3 justify-center items-center lg:w-full">
+            <Grid />
         </div>
         {/* We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection */}
         {logMode == 'debug' ? (
