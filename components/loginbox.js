@@ -39,6 +39,19 @@ export default function Loginbox(flags) {
     const lduser = await setCurrLDUser();
     lduser.key = userState.username;
     await LDClient.identify(lduser);
+    const response = await fetch(
+      window.location.protocol +
+          "//" +
+          window.location.host +
+          "/login", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(lduser)
+          }
+    )
+    console.log(response.json())
     await ls.remove('LD_User_Key')
     await ls.set('LD_User_Key', userState.username)
     LDClient.track('userLogin', { customProperty: userState.username });
@@ -51,7 +64,6 @@ export default function Loginbox(flags) {
 
   useEffect(() => {
     setUserState(LDClient.getUser())
-    console.log(userState)
   }, [])
 
   const handleChange = (e) => {
@@ -70,11 +82,10 @@ export default function Loginbox(flags) {
   const submitLogout = async (e) => {
     e.preventDefault();
     const lduser = await setCurrLDUser();
-    console.log(lduser)
     lduser.key = "anonymous";
     await LDClient.identify(lduser);
+    await ls.remove('LD_User_Key')
     LDClient.track('userClear', { customProperty: userState.username });
-    await console.log(LDClient.getUser());
     toast.success("User has been cleared");
     Array.from(document.querySelectorAll("input")).forEach(
       (input) => (input.value = "")

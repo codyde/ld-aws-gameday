@@ -2,8 +2,10 @@ launchdarkly-server-sdk
 requests
 datetime
 flask
-psycopg2
+flask-sqlalchemy
 flask_cors
+flask_session
+flask-session
 uwsgi
 gevent
 gunicorn==20.1.0 

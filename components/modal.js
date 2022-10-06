@@ -37,7 +37,7 @@ export default function Modal(code) {
         const response = await fetch( window.location.protocol +
           "//" +
           window.location.host +
-          "/users?LD_USER_KEY="+id)
+          "/datas")
         console.log(response.status)
         if (response.status != 200) {
           const data = debugData

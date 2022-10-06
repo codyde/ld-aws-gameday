@@ -67,7 +67,7 @@ Resources:
           import os
           import cfnresponse
 
-          dynamodb = boto3.resource('dynamodb'
+          dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
           table = dynamodb.Table('GamedayDB')
 
           def handler(event, context):
@@ -86,7 +86,7 @@ Resources:
                 'title1':'Unicorn with Confidence',
                 'text1':'Because you can always be confident when Unicorn.Rentals is providing your Unicorn.',
                 'title2':'Mythically Reliabile',
-                'text2':'If you can't trust that your Unicorn is going to be available when you ask for it, what can you really trust in this world?',
+                'text2':"If you can't trust that your Unicorn is going to be available when you ask for it, what can you really trust in this world?",
                 'title3':'Automagic Unicornation',
                 'text3':'The Unicorn is neither missing nor present. Its Automagic. It arrives when it needs to be there, and not a second before.',
                 }
@@ -186,6 +186,30 @@ Resources:
       Name: !Sub ${AWS::StackName}-image-build
       ServiceRole: !Ref CodePipelineServiceRole
 
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ['tasks.apprunner.amazonaws.com']
+            Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: ddb-access
+          PolicyDocument:
+            Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:BatchGetItem
+                - dynamodb:Scan
+                - dynamodb:Query
+                - dynamodb:ConditionCheckItem
+              Resource:
+                - !GetAtt GamedayDB.Arn
+  
   # AppRunnerCanaryService:
   #   Type: AWS::AppRunner::Service
   #   Properties:

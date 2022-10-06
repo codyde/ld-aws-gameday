@@ -22,11 +22,11 @@ export default function Connection() {
   async function queryAPI() {
     let id = await setID()
     const ENDPOINT2 =
-    window.location.protocol + "//" + window.location.host + "/health?LD_USER_KEY="+id;
+    window.location.protocol + "//" + window.location.host + "/health";
     const response = await fetch(ENDPOINT2);
     const data = await response.json();
     setloc1(data.status);
-    if (data.status != "healthy") {
+    if (response.status != 200) {
       setapi1("bg-ldred");
     } else {
       setapi1("bg-ldblue");
@@ -35,11 +35,12 @@ export default function Connection() {
   }
 
   async function queryTeamDebug() {
-    let tid = process.env.NEXT_PUBLIC_TEAM_ID
+    let id = await setID()
     const DEBUGENDPOINT =
-    window.location.protocol + "//" + window.location.host + "/teamdebug?TEAM_ID="+tid;
+    window.location.protocol + "//" + window.location.host + "/teamdebug";
     const response = await fetch(DEBUGENDPOINT);
     const data = await response.json();
+    console.log("the data is +" + data)
     setdebugid(data.debugcode);
   }
 

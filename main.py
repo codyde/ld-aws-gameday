@@ -1,24 +1,23 @@
-from psycopg2.extras import RealDictCursor
-import psycopg2
-from flask_cors import CORS
-from flask import Flask,jsonify, request, render_template
 import json
+from flask_cors import CORS
+from flask import Flask,jsonify, request, render_template, session
+from flask_session import Session 
 import ldclient
 from ldclient.config import Config
-import logging
 import os
 import eventlet
 import uuid
 import boto3
 eventlet.monkey_patch()
+from config import ApplicationConfig
 
 
 app = Flask(__name__, static_url_path='',
                   static_folder='out',
                   template_folder='out')
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-app.config['DEBUG'] = True
+app.config.from_object(ApplicationConfig)
 
+server_session = Session(app)
 
 LD_KEY = os.environ.get('LD_SERVER_KEY')
 
@@ -28,7 +27,6 @@ user = {
     "key": "anonymous"
 }
 ldclient.set_config(Config(LD_KEY))
-logstatus = ldclient.get().variation('logMode', user, 'default')
 
 
 @app.route('/')
@@ -36,11 +34,31 @@ def default_path():
     return render_template("index.html")
 
 
+@app.route("/login", methods=["POST"])
+def app_login():
+    request_data = request.get_json()
+    session['key'] = request_data['key']
+    # session['device'] = request_data['device']
+    # session['operatingSystem'] = request_data['operatingSystem']
+    status = {
+        "status": session['key']+" has been logged in"
+    }
+    return jsonify(status) 
+
+@app.route("/logout")
+def app_logout():
+    session.pop('key', default=None)
+    status = {
+        "status":"logged out"
+    }
+    return jsonify(status)
+
+
 @app.route("/health")
 def get_api():
     ldclient.set_config(Config(LD_KEY))
     user = {
-        "key": request.args.get('LD_USER_KEY')
+        "key": session['key']
     }
     ldclient.get().identify(user)
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
@@ -64,7 +82,7 @@ def get_api():
 def thedata():
     ldclient.set_config(Config(LD_KEY))
     user = {
-        "key": request.args.get('LD_USER_KEY')
+        "key": session['key']
     }
     ldclient.get().identify(user)
 
@@ -146,14 +164,19 @@ def thedata():
             "text":"Will it ever end? Speculation is nay. It likely won't."
         }
         )]
-    return dummyData
+    return jsonify(dummyData[0])
     ## Comment out above this line 
 
 @app.route("/teamdebug")
 def teamdebug():
+    user = {
+        "key": session['key']
+    }
+    ldclient.get().identify(user)
+    logstatus = ldclient.get().variation('logMode', user, 'default')
     if logstatus == "debug":
         teamid = os.environ.get("NEXT_PUBLIC_TEAM_ID")
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
         table = dynamodb.Table('GamedayDB')
         data = table.get_item(Key={'teamid': str(teamid)})
         teamval = {
