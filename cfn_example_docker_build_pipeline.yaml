@@ -67,7 +67,7 @@ Resources:
           import os
           import cfnresponse
 
-          dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+          dynamodb = boto3.resource('dynamodb')
           table = dynamodb.Table('GamedayDB')
 
           def handler(event, context):
@@ -104,6 +104,7 @@ Resources:
       Environment:
         Variables:
           id: !Ref TeamName
+          region: !Ref Region
       Handler: index.handler
       Role:
         Fn::GetAtt: [ LambdaRole , "Arn" ]

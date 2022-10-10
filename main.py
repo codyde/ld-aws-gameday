@@ -21,6 +21,8 @@ server_session = Session(app)
 
 LD_KEY = os.environ.get('LD_SERVER_KEY')
 
+status_api = 'v2.3344'
+
 fallback = '{"dbinfo":"localhost","dbname":"localdb"}'
 
 user = {
@@ -52,6 +54,27 @@ def app_logout():
         "status":"logged out"
     }
     return jsonify(status)
+
+@app.route("/status")
+def get_status():
+    ldclient.set_config(Config(LD_KEY))
+    user = {
+        "key": 'anonymous'
+    }
+    ldclient.get().identify(user)
+    SiteStatus = ldclient.get().variation('SiteRelease', user, False)
+    print(SiteStatus)
+    if SiteStatus == True: 
+        data = {
+            "app-version": status_api
+        }
+        return jsonify(data)
+    else:
+        data = {
+            "data": "no-data"
+        }
+        return jsonify(data)
+
 
 
 @app.route("/health")
@@ -85,6 +108,7 @@ def thedata():
         "key": session['key']
     }
     ldclient.get().identify(user)
+    logstatus = ldclient.get().variation('logMode', user, 'default')
 
     ############################################################################################
     #                                                                                          #
@@ -175,7 +199,7 @@ def teamdebug():
     ldclient.get().identify(user)
     logstatus = ldclient.get().variation('logMode', user, 'default')
     if logstatus == "debug":
-        teamid = os.environ.get("NEXT_PUBLIC_TEAM_ID")
+        teamid = os.environ.get("TEAM_ID")
         dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
         table = dynamodb.Table('GamedayDB')
         data = table.get_item(Key={'teamid': str(teamid)})
