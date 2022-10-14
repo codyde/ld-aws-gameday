@@ -141,7 +141,7 @@ def thedata():
     # else:
     #     dynamodb = boto3.resource('dynamodb')
     #     table = dynamodb.Table('GamedayDB')
-    #     data = table.get_item(Key={'teamid': '2'})
+    #     data = table.get_item(Key={'teamid': '1'})
     #     realData = [(
     #         {
     #             "id":1,
@@ -193,14 +193,17 @@ def thedata():
 
 @app.route("/teamdebug")
 def teamdebug():
+    # user = {
+    #     "key": session['key']
+    # }
     user = {
-        "key": session['key']
+        "key": "debuguser"
     }
     ldclient.get().identify(user)
     logstatus = ldclient.get().variation('logMode', user, 'default')
     if logstatus == "debug":
         teamid = os.environ.get("TEAM_ID")
-        dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+        dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('GamedayDB')
         data = table.get_item(Key={'teamid': str(teamid)})
         teamval = {

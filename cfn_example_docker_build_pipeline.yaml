@@ -74,7 +74,7 @@ Resources:
             data = table.put_item(
             TableName='GamedayDB',
             Item={
-                'teamid': '1',
+                'teamid': os.environ.get['TeamID'],
                 'debugcode': 'pants',
                 'teamval': '123-abc'
                 }
@@ -104,7 +104,7 @@ Resources:
       Environment:
         Variables:
           id: !Ref TeamName
-          region: !Ref Region
+          TeamID: !Ref TeamName
       Handler: index.handler
       Role:
         Fn::GetAtt: [ LambdaRole , "Arn" ]
