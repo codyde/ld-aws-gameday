@@ -6,22 +6,6 @@ import toast, { Toaster } from "react-hot-toast";
 import ls from 'local-storage';
 import localStorage from "local-storage";
 
-
-const styles = {
-  rollin: {
-    animation: "x 1s",
-    animationName: Radium.keyframes(rollIn, "rollIn"),
-  },
-  bounce: {
-    animation: "x 3s",
-    animationName: Radium.keyframes(zoomInDown, "zoomInDown"),
-  },
-  zoomleft: {
-    animation: "x 3s",
-    animationName: Radium.keyframes(zoomInLeft, "zoomInLeft"),
-  },
-};
-
 export default function Loginbox(flags) {
   const LDClient = useLDClient();
 
@@ -84,6 +68,17 @@ export default function Loginbox(flags) {
     const lduser = await setCurrLDUser();
     lduser.key = "anonymous";
     await LDClient.identify(lduser);
+    await fetch(
+      window.location.protocol +
+          "//" +
+          window.location.host +
+          "/logout", {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+    )
     await ls.remove('LD_User_Key')
     LDClient.track('userClear', { customProperty: userState.username });
     toast.success("User has been cleared");

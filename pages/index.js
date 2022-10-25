@@ -51,7 +51,15 @@ export default function Home() {
           },
         }}
       />
-      {/* Below here is a Feature Flag evaluation - if true, we execute the new brand website. If false, we render the preview banner */}
+      {/* 
+        ### DEV NOTES ###
+        Our feature flag for the big release is below. Ensure it's been created in LaunchDarkly. 
+
+        Flag Type - Boolean
+        Name/Key - siteRelease
+      
+        !! THIS NAME MUST MATCH LINE 63 !! 
+      */}
       {siteRelease ? 
       <main className="h-screen grid grid-cols-4 grid-rows-3">
           <div className="grid col-span-4 row-start-3 my-8 lg:row-start-2 lg:col-span-1 lg:col-start-1 justify-center items-center px-8">
@@ -66,7 +74,20 @@ export default function Home() {
         <div className="grid col-span-4 row-start-2 lg:col-start-2 lg:col-span-3 lg:row-start-3 justify-center items-center lg:w-full">
             <Grid />
         </div>
-        {/* We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection */}
+        {/* 
+        
+        ### DEV NOTES ###
+
+        We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection
+        
+        Debug mode feature flag is below. Ensure it's been created in LaunchDarkly. This is a multi-variate string. This means you can create multiple version of this flag that return different results. 
+
+        Flag Type - String
+        On value - 'debug'
+        Off value - 'default'
+
+        !! THIS NAME MUST MATCH LINE 91 !! 
+        */}
         {logMode == 'debug' ? (
           <div className="grid col-span-4 row-start-2 lg:col-start-1 lg:col-span-1 lg:row-start-3 justify-center items-center lg:w-full">
             <Connection />

@@ -21,16 +21,20 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - echo docker build -t $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      # - echo docker build -t $REPOSITORY_URI:unicornrentals .
       - sed -i "s/LDSERVERSDK/$LD_SERVER_KEY/g" .env
       - sed -i "s/LDCLIENTSDK/$NEXT_PUBLIC_LD_CLIENT_KEY/g" .env
       - sed -i "s/GDTEAM/$NEXT_PUBLIC_TEAM_ID/g" .env
       - docker build -t $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      # - docker build -t $REPOSITORY_URI:unicornrentals .
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker tag $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION $REPOSITORY_URI:latest
+      # - docker tag $REPOSITORY_URI:unicornrentals $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:latest
       - printf '[{"name":"interactions-service","imageUri":"%s"}]' $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION > imagedefinitions.json
+      # - printf '[{"name":"interactions-service","imageUri":"%s"}]' $REPOSITORY_URI:unicornrentals > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
