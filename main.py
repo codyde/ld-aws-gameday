@@ -40,8 +40,6 @@ def default_path():
 def app_login():
     request_data = request.get_json()
     session['key'] = request_data['key']
-    # session['device'] = request_data['device']
-    # session['operatingSystem'] = request_data['operatingSystem']
     status = {
         "status": session['key']+" has been logged in"
     }
@@ -161,36 +159,6 @@ def thedata():
         )]
         return jsonify(realData)
 
-    ############################################################################################
-    #                                                                                          #
-    #                                                                                          #
-    #                            End New Database Code                                         #
-    #                                                                                          #
-    #                                                                                          #
-    ############################################################################################ 
-
-    ## When we deploy the prod code - comment out this dummydata debuggin section 
-    ## and use the flag conditionals above 
-    # dummyData = [(
-    #     {
-    #         "id":1,
-    #         "title":"Debug Ipsum 1",
-    #         "text":"This is our debug text. Charlie ate the last candy bar."
-    #     },
-    #     {
-    #         "id":2,
-    #         "title":"Debug Ipsum 2",
-    #         "text":"We're debugging all the Unicorns. They are trampling our code."
-    #     },
-    #     {
-    #         "id":3,
-    #         "title":"Debug Ipsum 3",
-    #         "text":"Will it ever end? Speculation is nay. It likely won't."
-    #     }
-    #     )]
-    return jsonify(dummyData[0])
-    ## Comment out above this line 
-
 @app.route("/teamdebug")
 def teamdebug():
     if session['key'] != None:
@@ -203,6 +171,17 @@ def teamdebug():
         }
     ldclient.get().identify(user)
     logstatus = ldclient.get().variation('logMode', user, 'default')
+    ### DEV NOTES ###
+
+    # We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection
+    
+    # Debug mode feature flag is below. Ensure it's been created in LaunchDarkly. This is a multi-variate string. This means you can create multiple version of this flag that return different results. 
+
+    # Flag Type - String
+    # Variation 1 (On)  - 'debug'
+    # Variation 2 (Off) - 'default'
+
+    # !! THIS NAME MUST MATCH LINE 185 !! 
     if logstatus == "debug":
         teamid = os.environ.get("TEAM_ID")
         dynamodb = boto3.resource('dynamodb')
