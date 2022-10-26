@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Head from "next/head";
 import Loginbox from "../components/loginbox.js";
 import Connection from "../components/connection.js";
@@ -9,9 +10,11 @@ import Preview from "../components/preview.js";
 import Herotext from "../components/herotext.js";
 import Grid from "../components/grid.js";
 
+
 export default function Home() {
   // Feature flags that are created and managed in LaunchDarkly
   const { siteRelease, logMode } = useFlags();
+  const [userObj, setUserObj] = useState(); 
   //
   return (
     <div className="h-screen bg-ld-ls bg-no-repeat bg-center bg-cover">
@@ -62,7 +65,7 @@ export default function Home() {
       {siteRelease ? 
       <main className="h-screen grid grid-cols-4 grid-rows-3">
           <div className="grid col-span-4 row-start-3 my-8 lg:row-start-2 lg:col-span-1 lg:col-start-1 justify-center items-center px-8">
-            <Loginbox />
+            <Loginbox userObj={userObj} setUserObj={setUserObj} />
           </div>
         <div className="grid col-span-4 row-start-1  h-2/3 items-center">
           <Banner />
@@ -71,7 +74,7 @@ export default function Home() {
             <Herotext />
         </div>
         <div className="grid col-span-4 row-start-2 lg:col-start-2 lg:col-span-3 lg:row-start-3 justify-center items-center lg:w-full">
-            <Grid />
+            <Grid userObj={userObj} />
         </div>
         {/* 
         

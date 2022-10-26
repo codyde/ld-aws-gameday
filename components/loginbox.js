@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import ls from 'local-storage';
 import localStorage from "local-storage";
 
-export default function Loginbox(flags) {
+export default function Loginbox({userObj, setUserObj}) {
   const LDClient = useLDClient();
 
   const [userState, setUserState] = useState({
@@ -40,6 +40,8 @@ export default function Loginbox(flags) {
     await ls.set('LD_User_Key', userState.username)
     LDClient.track('userLogin', { customProperty: userState.username });
     toast.success("Your LaunchDarkly user is " + userState.username);
+    setUserObj(userState.username)
+    console.log("state is set for userobj = "+userObj)
     console.log("The updated user is: " + lduser.key);
     Array.from(document.querySelectorAll("input")).forEach(
       (input) => (input.value = "")

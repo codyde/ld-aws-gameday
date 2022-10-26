@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ls from "local-storage";
 
-export default function Grids() {
+export default function Grids(userObj) {
   async function setID() {
     let id = ls.get("LD_User_Key");
     return id;
@@ -47,7 +47,7 @@ export default function Grids() {
       }
     };
     fetchData();
-  }, []);
+  }, [userObj]);
 
   return (
     <div className="grid space-x-4 justify-center invisible sm:invisible md:visible">
