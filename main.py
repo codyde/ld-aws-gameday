@@ -117,12 +117,12 @@ def thedata():
     # JSON based feature flags allow us to push configuration blocks that we can parse and use within our application code. 
     
     # The code to use Feature Flags to migrate our data is below, as well as the parameters to create in Launchdarkly. When you create these in LaunchDarkly, it is recommended to copy and paste the flag values, including the leading/ending single quotes (')
-
+    
+    # Flag Name/Key - dbDetails
     # Flag Type - JSON
     # Variation 1 (On)  - '{"dbhost": "dynamodb","gamedaydb": "localdb","mode": "Cloud"}'
     # Variation 2 (Off) - '{"dbhost": "db","dbname": "localdb","mode": "Local"}'
 
-    # !! THIS NAME MUST MATCH LINE 185 !! 
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
     print(dbinfo)
     if dbinfo['dbhost'] == 'db':
@@ -185,11 +185,10 @@ def teamdebug():
     
     # Debug mode feature flag is below. Ensure it's been created in LaunchDarkly. This is a multi-variate string. This means you can create multiple version of this flag that return different results. 
 
+    # Flag Name/Key - logMode
     # Flag Type - String
     # Variation 1 (On)  - 'debug'
-    # Variation 2 (Off) - 'default'
-
-    # !! THIS NAME MUST MATCH LINE 185 !! 
+    # Variation 2 (Off) - 'default' 
     if logstatus == "debug":
         teamid = os.environ.get("TEAM_ID")
         dynamodb = boto3.resource('dynamodb')
