@@ -60,7 +60,7 @@ def get_status():
         "key": 'anonymous'
     }
     ldclient.get().identify(user)
-    SiteStatus = ldclient.get().variation('SiteRelease', user, False)
+    SiteStatus = ldclient.get().variation('siteRelease', user, False)
     print(SiteStatus)
     if SiteStatus == True: 
         data = {

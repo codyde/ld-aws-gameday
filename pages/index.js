@@ -11,7 +11,7 @@ import Grid from "../components/grid.js";
 
 export default function Home() {
   // Feature flags that are created and managed in LaunchDarkly
-  const { SiteRelease, logMode } = useFlags();
+  const { siteRelease, logMode } = useFlags();
   //
   return (
     <div className="h-screen bg-ld-ls bg-no-repeat bg-center bg-cover">
@@ -59,7 +59,7 @@ export default function Home() {
         Flag Type - Boolean
       
       */}
-      {SiteRelease ? 
+      {siteRelease ? 
       <main className="h-screen grid grid-cols-4 grid-rows-3">
           <div className="grid col-span-4 row-start-3 my-8 lg:row-start-2 lg:col-span-1 lg:col-start-1 justify-center items-center px-8">
             <Loginbox />
