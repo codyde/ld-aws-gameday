@@ -89,8 +89,6 @@ export default function Loginbox({userObj, setUserObj}) {
     );
   };
 
-  console.log(flags.userLogin)
-
   return (
     <StyleRoot>
         <div className="flex justify-center items-center">
