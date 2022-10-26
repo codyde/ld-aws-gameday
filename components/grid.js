@@ -40,13 +40,10 @@ export default function Grids() {
       console.log("Your current ID is " + id);
       if (response.status != 200) {
         setDummyData(seedData);
-        console.log(seedData);
         return seedData;
       } else {
         const nbdData = await response.json();
-        console.log(nbdData)
-        setDummyData(nbdData);
-        console.log(dummyData)
+        setDummyData(nbdData[0]);
       }
     };
     fetchData();

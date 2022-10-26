@@ -88,27 +88,40 @@ def get_api():
     ldclient.get().identify(user)
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
     print(user)
-    if dbinfo['mode'] == "Cloud":
+    try:
+        if dbinfo['mode'] == "Cloud":
+            stats = {
+                'version': '2',
+                'status': 'Healthy - Migration Successful',
+                'location': 'Cloud'
+            }
+            
+        else:
+            stats = {
+                'version': '1',
+                'status': 'unhealthy',
+                'location': 'DebugData'
+            }
+        return jsonify(stats)
+    except:
         stats = {
-            'version': '2',
-            'status': 'Healthy - Migration Successful',
-            'location': 'Cloud'
-        }
-        
-    else:
-        stats = {
-            'version': '1',
-            'status': 'unhealthy',
-            'location': 'DebugData'
-        }
-    return jsonify(stats)
+                'version': '1',
+                'status': 'unhealthy',
+                'location': 'DebugData'
+            }
+        return  jsonify(stats)
 
 @app.route("/datas", methods=["GET", "POST"])
 def thedata():
     ldclient.set_config(Config(LD_KEY))
-    user = {
-        "key": session['key']
-    }
+    try:
+        user = {
+            "key": session['key']
+        }
+    except: 
+        user = {
+            "key": 'debuguser'
+        }
     ldclient.get().identify(user)
     logstatus = ldclient.get().variation('logMode', user, 'default')
 
