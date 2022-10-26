@@ -23,7 +23,7 @@ LD_KEY = os.environ.get('LD_SERVER_KEY')
 
 status_api = 'v2.3344'
 
-fallback = '{"dbinfo":"localhost","dbname":"localdb"}'
+fallback = '{"dbhost": "db","dbname": "localdb","mode": "Local"}'
 
 user = {
     "key": "anonymous"
@@ -107,14 +107,17 @@ def thedata():
     ldclient.get().identify(user)
     logstatus = ldclient.get().variation('logMode', user, 'default')
 
-    ############################################################################################
-    #                                                                                          #
-    #                                                                                          #
-    #             Code for implementing a database read feature flag is below                  #
-    #                                                                                          #
-    #                                                                                          #
-    ############################################################################################
+    ### DEV NOTES ###
 
+    # JSON based feature flags allow us to push configuration blocks that we can parse and use within our application code. 
+    
+    # The code to use Feature Flags to migrate our data is below, as well as the parameters to create in Launchdarkly. When you create these in LaunchDarkly, it is recommended to copy and paste the flag values, including the leading/ending single quotes (')
+
+    # Flag Type - JSON
+    # Variation 1 (On)  - '{"dbhost": "dynamodb","gamedaydb": "localdb","mode": "Cloud"}'
+    # Variation 2 (Off) - '{"dbhost": "db","dbname": "localdb","mode": "Local"}'
+
+    # !! THIS NAME MUST MATCH LINE 185 !! 
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
     print(dbinfo)
     if dbinfo['dbhost'] == 'db':
@@ -161,11 +164,11 @@ def thedata():
 
 @app.route("/teamdebug")
 def teamdebug():
-    if session['key'] != None:
+    try:
         user = {
             "key": session['key']
         }
-    else:
+    except:
         user = {
             "key": "debuguser"
         }
