@@ -77,9 +77,14 @@ def get_status():
 @app.route("/health")
 def get_api():
     ldclient.set_config(Config(LD_KEY))
-    user = {
-        "key": session['key']
-    }
+    try:
+        user = {
+            "key": session['key']
+        }
+    except:
+        user = {
+            "key": 'debuguser'
+        }
     ldclient.get().identify(user)
     dbinfo = ldclient.get().variation('dbDetails', user, fallback)
     print(user)
