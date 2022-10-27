@@ -36,8 +36,6 @@ export default function Grids(userObj) {
           window.location.host +
           "/datas"
       );
-      console.log("DEBUG MODE = The return code is " + response.status);
-      console.log("Your current ID is " + id);
       if (response.status != 200) {
         setDummyData(seedData);
         return seedData;
@@ -51,7 +49,7 @@ export default function Grids(userObj) {
 
   return (
     <div className="grid space-x-4 justify-center invisible sm:invisible md:visible">
-      <div className="grid grid-cols-3 col-span-4 space-x-4 justify-center">
+      <div className="grid grid-cols-3 col-span-4 space-x-4 justify-center font-sohne">
         {dummyData.map(function (card) {
           return (
             <div key={card.id}

@@ -38,16 +38,13 @@ export default function Modal(code) {
           "//" +
           window.location.host +
           "/datas")
-        console.log(response.status)
         if (response.status != 200) {
           const data = debugData
           setQuery(data)
           return data
         } else {
         const data = await response.text()
-        console.log(data)
-        setQuery(data)+
-        console.log(query)
+        setQuery(data)
         return data
       }
     }

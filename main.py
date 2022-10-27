@@ -142,18 +142,18 @@ def thedata():
         dummyData = [(
             {
                 "id":1,
-                "title":"Debug Ipsum 1",
-                "text":"This is our debug text. Charlie ate the last candy bar."
+                "title":"DEBUG - Database TODO",
+                "text":"I really hope we don't forget to create the flag to enable the new database connection"
             },
             {
                 "id":2,
-                "title":"Debug Ipsum 2",
-                "text":"We're debugging all the Unicorns. They are trampling our code."
+                "title":"DEBUG - Wow this design",
+                "text":"So much CSS was used to get boxes to line up and I bet they are still uneven."
             },
             {
                 "id":3,
-                "title":"Debug Ipsum 3",
-                "text":"Will it ever end? Speculation is nay. It likely won't."
+                "title":"DEBUG - I need dinner",
+                "text":"I've been coding for what seems like years and I still have no idea what im picking up for dinner."
             }
         )]
         return jsonify(dummyData)

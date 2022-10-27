@@ -96,7 +96,7 @@ export default function Home() {
           </div>
         ) : null}
       </main> : 
-        <main className="h-screen bg-gray-800 grid grid-cols-4 grid-rows-3">
+        <main className="h-screen bg-ld-ls grid grid-cols-4 grid-rows-3">
           <div className="grid col-span-4 row-start-2 items-center ">
             <Preview />
           </div> 

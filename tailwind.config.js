@@ -3,12 +3,15 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      fontFamily: {
+        audimat: ["Audimat"],
+        sohne: ["Sohne"],
+      },
       backgroundSize: {
         '50': '100%'
       },
       backgroundImage: {
-        'ld-ls': "url('/ls_resize.png')",
-        'ld-ls-wide': "url('/LightSpeed_bg_wide.png')"
+        'ld-ls': "url('/ld-bg.png')"
       },
       colors: {
         aws: '#FF9900',

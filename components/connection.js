@@ -40,7 +40,6 @@ export default function Connection() {
     window.location.protocol + "//" + window.location.host + "/teamdebug";
     const response = await fetch(DEBUGENDPOINT);
     const data = await response.json();
-    console.log("the data is +" + data)
     setdebugid(data.debugcode);
   }
 
@@ -52,6 +51,7 @@ export default function Connection() {
     }
     queryAPI();
     console.log("running useeffect");
+    console.log("Note: If you are seeing UNKNOWN in the debug field; check your feature flags and TEAM_ID configuration")
   }, [dbDetails]);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function Connection() {
             <Modal dbDetails={dbDetails} />
           </div>
           <div>
-          <p className="text-center mx-auto text-white text-xl">Debug ID for team is {debugid.toUpperCase()}</p>
+          <p className="text-center mx-auto text-white text-xl">Debug error code for is {debugid.toLowerCase()}</p>
           </div>
         </div>
       </div>

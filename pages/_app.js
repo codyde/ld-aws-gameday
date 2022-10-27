@@ -1,5 +1,5 @@
-// import "../styles/globals.css";
-import 'tailwindcss/tailwind.css'
+import "../styles/globals.css";
+// import 'tailwindcss/tailwind.css'
 import { withLDProvider } from "launchdarkly-react-client-sdk";
 import { deviceType, osName } from "react-device-detect";
 import {v4 as uuidv4} from 'uuid';

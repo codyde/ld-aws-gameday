@@ -33,6 +33,17 @@
     flex-grow: 1;
   } */
 
+
+@font-face {
+  font-family: "Audimat";
+  src: url("/fonts/Audimat3000-Regulier.otf");
+}
+
+@font-face {
+  font-family: "Sohne";
+  src: url("/fonts/Söhne-Kräftig.otf");
+}
+
 .title a {
   color: #0070f3;
   text-decoration: none;
