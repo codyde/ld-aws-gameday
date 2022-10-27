@@ -58,7 +58,7 @@ export default function Home() {
         ### DEV NOTES ###
         Our feature flag for the big release is below. Ensure it's been created in LaunchDarkly. 
 
-        Flag Name/Key - SiteRelease
+        Flag Name/Key - siteRelease
         Flag Type - Boolean
       
       */}
