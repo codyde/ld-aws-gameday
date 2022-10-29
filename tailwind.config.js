@@ -1,12 +1,8 @@
 module.exports = {
-  purge: true,
+  purge: false,
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-      fontFamily: {
-        audimat: ["Audimat"],
-        sohne: ["Sohne"],
-      },
       backgroundSize: {
         '50': '100%'
       },

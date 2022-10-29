@@ -160,7 +160,7 @@ def thedata():
     else:
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('GamedayDB')
-        data = table.get_item(Key={'teamid': os.environ.get('TEAM_ID')})
+        data = table.get_item(Key={'teamid': 'GDTEAM'})
         realData = [(
             {
                 "id":1,
