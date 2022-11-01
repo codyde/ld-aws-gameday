@@ -203,7 +203,7 @@ def teamdebug():
     # Variation 1 (On)  - 'debug'
     # Variation 2 (Off) - 'default' 
     if logstatus == "debug":
-        teamid = os.environ.get("TEAM_ID")
+        teamid = "GDTEAM"
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('GamedayDB')
         data = table.get_item(Key={'teamid': str(teamid)})
