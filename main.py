@@ -127,12 +127,9 @@ def thedata():
 
     ### DEV NOTES ###
 
-    # JSON based feature flags allow us to push configuration blocks that we can parse and use within our application code. 
+    # Strings and booleans aren't the only flag types that LaunchDarkly supports! 
     
-    # The code to use Feature Flags to migrate our data is below, as well as the parameters to create in Launchdarkly. When you create these in LaunchDarkly, it is recommended to copy and paste these values
-    
-    # Flag Name/Key - dbDetails
-    # Flag Type - JSON
+    # The code to use Feature Flags to migrate our data is below, as well as the parameters to create in LaunchDarkly. See if you can pick out where the name of the flag is and what values you need. When you create the flag in LaunchDarkly, you'll want to copy these values to get your flag to work. 
     # Variation 1 (On)  - {"dbhost": "dynamodb","gamedaydb": "localdb","mode": "Cloud"}
     # Variation 2 (Off) - {"dbhost": "db","dbname": "localdb","mode": "Local"}
 
@@ -165,17 +162,17 @@ def thedata():
             {
                 "id":1,
                 "title":data['Item']['title1'],
-                "text":data['Item']['text1']
+                "text":data['Item']['text1'],
             },
             {
                 "id":1,
                 "title":data['Item']['title2'],
-                "text":data['Item']['text2']
+                "text":data['Item']['text2'],
             },
             {
                 "id":1,
                 "title":data['Item']['title3'],
-                "text":data['Item']['text3']
+                "text":data['Item']['text3'],
             }
         )]
         return jsonify(realData)

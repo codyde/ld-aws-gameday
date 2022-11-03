@@ -14,7 +14,7 @@ import Grid from "../components/grid.js";
 export default function Home() {
   // Feature flags that are created and managed in LaunchDarkly
   const { siteRelease, logMode } = useFlags();
-  const [userObj, setUserObj] = useState(); 
+  const [userObj, setUserObj] = useState();
   //
   return (
     <div className="h-screen bg-ld-ls bg-no-repeat bg-center bg-cover">
@@ -62,44 +62,41 @@ export default function Home() {
         Flag Type - Boolean
       
       */}
-      {siteRelease ? 
-      <main className="h-screen grid grid-cols-4 grid-rows-3">
-          <div className="grid col-span-4 row-start-3 my-8 lg:row-start-2 lg:col-span-1 lg:col-start-1 justify-center items-center px-8">
+      {siteRelease ?
+        <div className="grid grid-cols-5">
+          <div className="row-start-1 col-span-3">
+            <Banner />
+          </div>
+          <div class='row-start-1 flex justify-end col-start-4 col-span-2 shadow-2xl'>
             <Loginbox userObj={userObj} setUserObj={setUserObj} />
           </div>
-        <div className="grid col-span-4 row-start-1  h-2/3 items-center">
-          <Banner />
-        </div>
-        <div className="grid col-start-2 col-span-3 row-start-2 items-center ">
+          <div className="row-start-2 col-span-5 items-end">
             <Herotext />
-        </div>
-        <div className="grid col-span-4 row-start-2 lg:col-start-2 lg:col-span-3 lg:row-start-3 justify-center items-center lg:w-full">
+          </div>
+          <div className="flex row-start-3 col-span-5 justify-center">
             <Grid userObj={userObj} />
-        </div>
-        {/* 
+          </div>
+          {/* 
         
         ### DEV NOTES ###
 
-        We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection
+        We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection!
         
-        Debug mode feature flag is below. Ensure it's been created in LaunchDarkly. This is a multi-variate string. This means you can create multiple version of this flag that return different results. 
-        
-        Flag Name/Key - logMode
-        Flag Type - String
+        Here's a hint, you'll need to use these values:
         On value - 'debug'
         Off value - 'default'
 
         */}
-        {logMode == 'debug' ? (
-          <div className="grid col-span-4 row-start-2 lg:col-start-1 lg:col-span-1 lg:row-start-3 justify-center items-center lg:w-full">
-            <Connection />
-          </div>
-        ) : null}
-      </main> : 
+          {logMode == 'debug' ? (
+            <div className="flex row-start-4 col-span-5 justify-center">
+              <Connection />
+            </div>
+          ) : null}
+        </div> :
         <main className="h-screen bg-ld-ls grid grid-cols-4 grid-rows-3">
-          <div className="grid col-span-4 row-start-2 items-center ">
+          <div className="grid col-span-4 row-start-2 items-center">
             <Preview />
-          </div> 
+          </div>
         </main>
       }
     </div>

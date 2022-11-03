@@ -2,15 +2,16 @@ import React, { useEffect } from "react";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import ls from 'local-storage';
+import { Button } from "semantic-ui-react";
 
 
 
-export default function Modal(code) {
+export default function Secondmodal(code) {
   const [showModal, setShowModal] = React.useState(false);
   const [query, setQuery] = React.useState()
   const [userkey, setuserkey] = React.useState("anonymous")
 
-  async function setID(){
+  async function setID() {
     let id = ls.get('LD_User_Key');
     setuserkey(id)
     return id
@@ -24,7 +25,7 @@ export default function Modal(code) {
     id: "2",
     data: "DEBUG-ALSO-EMPTY",
   }]
-  
+
 
   useEffect(() => {
     console.log("update to key detected")
@@ -32,37 +33,38 @@ export default function Modal(code) {
 
   console.log(code.dbDetails)
 
-    async function queryDB() {
-        let id = await setID()
-        const response = await fetch( window.location.protocol +
-          "//" +
-          window.location.host +
-          "/datas")
-        if (response.status != 200) {
-          const data = debugData
-          setQuery(data)
-          return data
-        } else {
-        const data = await response.text()
-        setQuery(data)
-        return data
-      }
+  async function queryDB() {
+    let id = await setID()
+    const response = await fetch(window.location.protocol +
+      "//" +
+      window.location.host +
+      "/datas")
+    if (response.status != 200) {
+      const data = debugData
+      setQuery(data)
+      return data
+    } else {
+      const data = await response.text()
+      setQuery(data)
+      return data
     }
+  }
 
-    React.useEffect(() => {
-        queryDB();
-        console.log("running useeffect")
-    },[code.dbDetails])
-  
+  React.useEffect(() => {
+    queryDB();
+    console.log("running useeffect")
+  }, [code.dbDetails])
+
   return (
     <>
-      <button
+      <Button
+        color="purple"
         className="bg-ldyellow text-black uppercase text-sm px-6 py-3 ease-linear transition-all duration-150"
         type="button"
         onClick={() => setShowModal(true)}
       >
         Database Details
-      </button>
+      </Button>
       {showModal ? (
         <>
           <div
@@ -88,7 +90,7 @@ export default function Modal(code) {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <SyntaxHighlighter language="json" style={a11yDark}>
-                      {query}
+                    {query}
                   </SyntaxHighlighter>
                 </div>
                 {/*footer*/}

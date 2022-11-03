@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useFlags } from "launchdarkly-react-client-sdk";
-import Modal from "./modal";
+import Secondmodal from "./modal";
 import ls from 'local-storage';
+import { Icon, Button, Modal, Segment } from "semantic-ui-react";
 
 
 export default function Connection() {
@@ -13,16 +14,16 @@ export default function Connection() {
   const [debugid, setdebugid] = useState("UNKNOWN")
 
 
-  async function setID(){
+  async function setID() {
     let id = ls.get('LD_User_Key');
     setuserkey(id)
     return id
   }
-  
+
   async function queryAPI() {
     let id = await setID()
     const ENDPOINT2 =
-    window.location.protocol + "//" + window.location.host + "/health";
+      window.location.protocol + "//" + window.location.host + "/health";
     const response = await fetch(ENDPOINT2);
     const data = await response.json();
     setloc1(data.status);
@@ -37,7 +38,7 @@ export default function Connection() {
   async function queryTeamDebug() {
     let id = await setID()
     const DEBUGENDPOINT =
-    window.location.protocol + "//" + window.location.host + "/teamdebug";
+      window.location.protocol + "//" + window.location.host + "/teamdebug";
     const response = await fetch(DEBUGENDPOINT);
     const data = await response.json();
     setdebugid(data.debugcode);
@@ -63,28 +64,44 @@ export default function Connection() {
     // console.log("Team Debug ID is ")
   }, [])
 
+
+  const [firstOpen, setFirstOpen] = React.useState(false)
+
   return (
-    <div className="flex mx-auto w-full space-x-4">
-      <div
-        className="grid mx-auto justify-center items-center bg-ldgray shadow-2xl py-8 px-8 w-full"
-      >
-        <div>
-          <h1 className="text-center font-bold text-ldgraytext text-base lg:text-4xl">
-            The most secret DEBUG view
-          </h1>
-          <p className="text-center text-white">Connected to the{" "}
-            <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
-          <div className={`overflow-hidden h-8 flex px-8 pb-4 ${api1}`}>
-            <p className="mx-auto text-black text-xl">{loc1.toUpperCase()}</p>
-          </div>
-          <div className="grid mx-auto py-4">
-            <Modal dbDetails={dbDetails} />
-          </div>
-          <div>
-          <p className="text-center mx-auto text-white text-xl">Debug error code for is {debugid.toLowerCase()}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Segment basic textAlign='center'>
+      <Button.Group>
+        <Button onClick={() => setFirstOpen(true)}>Check Database Connection</Button>
+
+        <Modal
+          onClose={() => setFirstOpen(false)}
+          onOpen={() => setFirstOpen(true)}
+          open={firstOpen}
+        >
+          <Modal.Header>The most secret DEBUG view</Modal.Header>
+          <Modal.Content image>
+            <div className='image'>
+              <Icon name='warning' />
+            </div>
+            <Modal.Description>
+              <p className="text-left text-white">Connected to the{" "}
+                <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
+
+              <div>
+                <p className="text-left mx-auto text-white text-xl">Debug error code for is {debugid.toLowerCase()}</p>
+              </div>
+              <div className={`overflow-hidden h-8 flex px-8 pb-4 ${api1}`}>
+                <p className="mx-auto text-black text-xl">{loc1.toUpperCase()}</p>
+              </div>
+            </Modal.Description>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button onClick={() => setFirstOpen(false)} primary>
+              Close <Icon name='right chevron' />
+            </Button>
+          </Modal.Actions>
+        </Modal>
+        <Secondmodal dbDetails={dbDetails} />
+      </Button.Group>
+    </Segment>
   );
 }
