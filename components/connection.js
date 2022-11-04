@@ -69,6 +69,9 @@ export default function Connection() {
 
   return (
     <Segment basic textAlign='center'>
+      <div>
+        <p className="text-center mx-auto p-5 text-white text-xl">Debug error code is {debugid.toLowerCase()}</p>
+      </div>
       <Button.Group>
         <Button onClick={() => setFirstOpen(true)}>Check Database Connection</Button>
 
@@ -76,21 +79,24 @@ export default function Connection() {
           onClose={() => setFirstOpen(false)}
           onOpen={() => setFirstOpen(true)}
           open={firstOpen}
+          size="tiny"
         >
           <Modal.Header>The most secret DEBUG view</Modal.Header>
           <Modal.Content image>
-            <div className='image'>
-              <Icon name='warning' />
-            </div>
-            <Modal.Description>
-              <p className="text-left text-white">Connected to the{" "}
-                <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
-
-              <div>
-                <p className="text-left mx-auto text-white text-xl">Debug error code for is {debugid.toLowerCase()}</p>
+            {dbDetails == "dynamodb" ?
+              <div className='image'>
+                <Icon name='check circle' />
               </div>
+              :
+              <div className='image'>
+                <Icon name='warning sign' />
+              </div>
+            }
+            <Modal.Description>
+              <p className="text-center text-black text-xl">Connected to the{" "}
+                <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
               <div className={`overflow-hidden h-8 flex px-8 pb-4 ${api1}`}>
-                <p className="mx-auto text-black text-xl">{loc1.toUpperCase()}</p>
+                <p className="mx-auto text-white text-xl">{loc1.toUpperCase()}</p>
               </div>
             </Modal.Description>
           </Modal.Content>
