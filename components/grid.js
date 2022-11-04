@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ls from "local-storage";
-import { Image, Card } from 'semantic-ui-react';
+import { Image, Divider } from 'semantic-ui-react';
 
 export default function Grids(userObj) {
   async function setID() {
@@ -52,24 +52,25 @@ export default function Grids(userObj) {
   }, [userObj]);
 
   return (
-    <div className="p-20 py-15 gap-1">
-      <Card.Group>
+    <div className="grid space-x-4 justify-center invisible sm:invisible md:visible py-10">
+      <div className="grid grid-cols-3 justify-center font-sohne">
         {dummyData.map(function (card) {
           return (
-            <Card color="purple" raised>
+            <div key={card.id}
+              className={`justify-items-center rounded-lg shadow-2xl bg-white mx-20 py-3 px-3 text-black border-8 border-white hover:border-purple-600`}
+            >
               <Image src={card.image} size="small" centered />
-              <Card.Content key={card.id}>
-                <Card.Header>
-                  {card.title}
-                </Card.Header>
-                <Card.Description>
-                  {card.text}
-                </Card.Description>
-              </Card.Content>
-            </Card>
+              <h1 className="text-2xl sm:text-base xl:text-2xl text-black text-center">
+                {card.title}
+              </h1>
+              <Divider />
+              <p className="text-black text-center text-xl text-black invisible md:text-xl xl:text-xl sm:invisible md:invisible xl:visible">
+                {card.text}
+              </p>
+            </div>
           );
         })}
-      </Card.Group>
+      </div>
     </div>
   );
 }

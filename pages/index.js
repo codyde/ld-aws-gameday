@@ -17,7 +17,7 @@ export default function Home() {
   const [userObj, setUserObj] = useState();
   //
   return (
-    <div className="h-screen bg-ld-ls bg-no-repeat bg-center bg-cover">
+    <div className="h-screen bg-ld-ls bg-repeat-y bg-center bg-cover">
       <Head>
         <title>UnicornRentals</title>
         <meta name="description" content="Built for exploring LaunchDarkly" />
@@ -73,7 +73,7 @@ export default function Home() {
           <div className="row-start-2 col-span-5 items-end">
             <Herotext />
           </div>
-          <div className="flex row-start-3 col-span-5 justify-center">
+          <div className="flex row-start-3 col-span-5 justify-center lg:text-2x xl:text-4x">
             <Grid userObj={userObj} />
           </div>
           {/* 

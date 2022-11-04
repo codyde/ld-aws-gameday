@@ -140,17 +140,20 @@ def thedata():
             {
                 "id":1,
                 "title":"DEBUG - Database TODO",
-                "text":"I really hope we don't forget to create the flag to enable the new database connection"
+                "text":"I really hope we don't forget to create the flag to enable the new database connection",
+                "image":"./unicorn-mane.jpg"
             },
             {
                 "id":2,
                 "title":"DEBUG - Wow this design",
-                "text":"So much CSS was used to get boxes to line up and I bet they are still uneven."
+                "text":"So much CSS was used to get boxes to line up and I bet they are still uneven.",
+                "image":"./unicorn-rainbow.jpg"
             },
             {
                 "id":3,
                 "title":"DEBUG - I need dinner",
-                "text":"I've been coding for what seems like years and I still have no idea what im picking up for dinner."
+                "text":"I've been coding for what seems like years and I still have no idea what im picking up for dinner.",
+                "image":"./unicorn-dab.png"
             }
         )]
         return jsonify(dummyData)
@@ -163,16 +166,19 @@ def thedata():
                 "id":1,
                 "title":data['Item']['title1'],
                 "text":data['Item']['text1'],
+                "image":data['Item']['image1'],
             },
             {
                 "id":1,
                 "title":data['Item']['title2'],
                 "text":data['Item']['text2'],
+                "image":data['Item']['image2'],
             },
             {
                 "id":1,
                 "title":data['Item']['title3'],
                 "text":data['Item']['text3'],
+                "image":data['Item']['image3'],
             }
         )]
         return jsonify(realData)
