@@ -57,7 +57,7 @@ export default function Grids(userObj) {
         {dummyData.map(function (card) {
           return (
             <div key={card.id}
-              className={`justify-items-center rounded-lg shadow-2xl bg-white mx-20 py-3 px-3 text-black border-8 border-white hover:border-purple-600`}
+              className={`justify-items-center rounded-lg shadow-2xl bg-white mx-20 py-3 px-3 text-black border-4 border-white hover:border-ldpurple`}
             >
               <Image src={card.image} size="small" centered />
               <h1 className="text-2xl sm:text-base xl:text-2xl text-black text-center">

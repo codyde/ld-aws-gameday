@@ -160,7 +160,7 @@ def thedata():
     else:
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('GamedayDB')
-        data = table.get_item(Key={'teamid': 'GDTEAM'})
+        data = table.get_item(Key={'teamid': '1'})
         realData = [(
             {
                 "id":1,
@@ -206,10 +206,10 @@ def teamdebug():
     # Variation 1 (On)  - 'debug'
     # Variation 2 (Off) - 'default' 
     if logstatus == "debug":
-        teamid = "GDTEAM"
+        teamid = "1"
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('GamedayDB')
-        data = table.get_item(Key={'teamid': str(teamid)})
+        data = table.get_item(Key={'teamid': '1'})
         teamval = {
             "teamid": teamid,
             "loglevel": logstatus,
