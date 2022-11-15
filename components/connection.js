@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useFlags } from "launchdarkly-react-client-sdk";
-import Secondmodal from "./modal";
 import ls from 'local-storage';
 import { Icon, Button, Modal, Segment } from "semantic-ui-react";
 
@@ -41,6 +40,7 @@ export default function Connection() {
       window.location.protocol + "//" + window.location.host + "/teamdebug";
     const response = await fetch(DEBUGENDPOINT);
     const data = await response.json();
+    console.log(data);
     setdebugid(data.debugcode);
   }
 
@@ -72,42 +72,39 @@ export default function Connection() {
       <div>
         <p className="text-center mx-auto p-5 text-white text-xl">Debug error code is {debugid.toLowerCase()}</p>
       </div>
-      <Button.Group>
-        <Button onClick={() => setFirstOpen(true)}>Check Database Connection</Button>
+      <Button onClick={() => setFirstOpen(true)}>Check Database Connection</Button>
 
-        <Modal
-          onClose={() => setFirstOpen(false)}
-          onOpen={() => setFirstOpen(true)}
-          open={firstOpen}
-          size="tiny"
-        >
-          <Modal.Header>The most secret DEBUG view</Modal.Header>
-          <Modal.Content image>
-            {dbDetails == "dynamodb" ?
-              <div className='image'>
-                <Icon name='check circle' />
-              </div>
-              :
-              <div className='image'>
-                <Icon name='warning sign' />
-              </div>
-            }
-            <Modal.Description>
-              <p className="text-center text-black text-xl">Connected to the{" "}
-                <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
-              <div className={`overflow-hidden h-8 flex px-8 pb-4 ${api1}`}>
-                <p className="mx-auto text-white text-xl">{loc1.toUpperCase()}</p>
-              </div>
-            </Modal.Description>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button onClick={() => setFirstOpen(false)} primary>
-              Close <Icon name='right chevron' />
-            </Button>
-          </Modal.Actions>
-        </Modal>
-        <Secondmodal dbDetails={dbDetails} />
-      </Button.Group>
+      <Modal
+        onClose={() => setFirstOpen(false)}
+        onOpen={() => setFirstOpen(true)}
+        open={firstOpen}
+        size="tiny"
+      >
+        <Modal.Header>The most secret DEBUG view</Modal.Header>
+        <Modal.Content image>
+          {dbDetails.mode == "Cloud" ?
+            <div className='image'>
+              <Icon name='check circle' />
+            </div>
+            :
+            <div className='image'>
+              <Icon name='warning sign' />
+            </div>
+          }
+          <Modal.Description>
+            <p className="text-center text-black text-xl">Connected to the{" "}
+              <span className="text-ldred">{api1loc.toUpperCase()}</span> Database</p>
+            <div className={`overflow-hidden h-8 flex px-8 pb-4 ${api1}`}>
+              <p className="mx-auto text-white text-xl">{loc1.toUpperCase()}</p>
+            </div>
+          </Modal.Description>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button onClick={() => setFirstOpen(false)} primary>
+            Close <Icon name='right chevron' />
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </Segment>
   );
 }

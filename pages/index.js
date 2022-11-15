@@ -24,7 +24,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Toaster
-        position="bottom-center"
+        position="bottom-left"
         reverseOrder={false}
         gutter={8}
         containerClassName=""
@@ -67,7 +67,7 @@ export default function Home() {
           <div className="row-start-1 col-span-3">
             <Banner />
           </div>
-          <div class='row-start-1 flex justify-end col-start-4 col-span-2 shadow-2xl'>
+          <div className='row-start-1 flex justify-end col-start-4 col-span-2 shadow-2xl'>
             <Loginbox userObj={userObj} setUserObj={setUserObj} />
           </div>
           <div className="row-start-2 col-span-5 items-end">
