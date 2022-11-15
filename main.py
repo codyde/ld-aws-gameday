@@ -127,12 +127,9 @@ def thedata():
 
     ### DEV NOTES ###
 
-    # JSON based feature flags allow us to push configuration blocks that we can parse and use within our application code. 
+    # Strings and booleans aren't the only flag types that LaunchDarkly supports! 
     
-    # The code to use Feature Flags to migrate our data is below, as well as the parameters to create in Launchdarkly. When you create these in LaunchDarkly, it is recommended to copy and paste these values
-    
-    # Flag Name/Key - dbDetails
-    # Flag Type - JSON
+    # The code to use Feature Flags to migrate our data is below, as well as the parameters to create in LaunchDarkly. See if you can pick out where the name of the flag is and what values you need. When you create the flag in LaunchDarkly, you'll want to copy these values to get your flag to work. 
     # Variation 1 (On)  - {"dbhost": "dynamodb","gamedaydb": "localdb","mode": "Cloud"}
     # Variation 2 (Off) - {"dbhost": "db","dbname": "localdb","mode": "Local"}
 
@@ -143,17 +140,20 @@ def thedata():
             {
                 "id":1,
                 "title":"DEBUG - Database TODO",
-                "text":"I really hope we don't forget to create the flag to enable the new database connection"
+                "text":"I really hope we don't forget to create the flag to enable the new database connection",
+                "image":"./unicorn-mane.jpg"
             },
             {
                 "id":2,
                 "title":"DEBUG - Wow this design",
-                "text":"So much CSS was used to get boxes to line up and I bet they are still uneven."
+                "text":"So much CSS was used to get boxes to line up and I bet they are still uneven.",
+                "image":"./unicorn-rainbow.jpg"
             },
             {
                 "id":3,
                 "title":"DEBUG - I need dinner",
-                "text":"I've been coding for what seems like years and I still have no idea what im picking up for dinner."
+                "text":"I've been coding for what seems like years and I still have no idea what im picking up for dinner.",
+                "image":"./unicorn-dab.png"
             }
         )]
         return jsonify(dummyData)
@@ -165,17 +165,20 @@ def thedata():
             {
                 "id":1,
                 "title":data['Item']['title1'],
-                "text":data['Item']['text1']
+                "text":data['Item']['text1'],
+                "image":data['Item']['image1'],
             },
             {
                 "id":1,
                 "title":data['Item']['title2'],
-                "text":data['Item']['text2']
+                "text":data['Item']['text2'],
+                "image":data['Item']['image2'],
             },
             {
                 "id":1,
                 "title":data['Item']['title3'],
-                "text":data['Item']['text3']
+                "text":data['Item']['text3'],
+                "image":data['Item']['image3'],
             }
         )]
         return jsonify(realData)

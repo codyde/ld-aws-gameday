@@ -3,4 +3,5 @@ __MACOSX
 out
 aws_gameday_api.zip
 Archive.zip
+.env
 node_modules/

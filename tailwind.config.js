@@ -18,7 +18,11 @@ module.exports = {
         ldyellow: '#EBFF38',
         ldgray: '#282828',
         ldgraytext: '#BCBEC0',
-        ldhl: '#EBFF38'
+        ldhl: '#EBFF38',
+        unicornshampoo: '#FFCAF2',
+        unicorntea: '#BCFFBC',
+        unicornmelon: '#FFB2B1',
+        unicornbananas: '#FFF3AD'
       }
     },
   },
