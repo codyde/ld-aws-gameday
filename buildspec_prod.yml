@@ -25,7 +25,7 @@ phases:
       - sed -i "s/LDSERVERSDK/$LD_SERVER_KEY/g" .env
       - sed -i "s/LDCLIENTSDK/$NEXT_PUBLIC_LD_CLIENT_KEY/g" .env
       - sed -i "s/GDTEAM/$TEAM_ID/g" .env
-      - sed -i "s/GDTEAM/$TEAM_ID/g" main.py
+      # - sed -i "s/GDTEAM/$TEAM_ID/g" main.py
       - docker build -t $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       # - docker build -t $REPOSITORY_URI:unicornrentals .
   post_build:
