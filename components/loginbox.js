@@ -87,7 +87,7 @@ export default function Loginbox({ userObj, setUserObj }) {
 
   return (
     <div className="p-12 py-16 items-center content-center">
-      <Form inverted size="medium">
+      <Form inverted size="small">
         <Form.Group inline>
           {/* <p className="mx-auto font-normal text-ldgraytext text-sm lg:text-lg my-6 max-w-lg">
               This login field will create a user object with the LaunchDarkly
