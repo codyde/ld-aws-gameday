@@ -26,7 +26,7 @@ RUN pip3 install --upgrade pip setuptools && \
     rm -r /root/.cache && \
     mkdir /out
 
-RUN pip install git+https://github.com/Supervisor/supervisor@master
+RUN pip install git+https://github.com/Supervisor/supervisor@main
 
 COPY . /app
 COPY app.conf /usr/supervisord.conf

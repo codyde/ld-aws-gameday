@@ -211,7 +211,6 @@ def teamdebug():
         table = dynamodb.Table('GamedayDB')
         data = table.get_item(Key={'teamid': '1'})
         teamval = {
-            "teamid": teamid,
             "loglevel": logstatus,
             "debugcode": data['Item']['debugcode']
         }
