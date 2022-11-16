@@ -64,7 +64,7 @@ export default function Grids(userObj) {
                 {card.title}
               </h1>
               <Divider />
-              <p className="text-black text-center text-xl text-black invisible md:text-xl xl:text-xl sm:invisible md:invisible xl:visible">
+              <p className="text-black text-center text-xl invisible md:text-xl xl:text-xl sm:invisible md:invisible xl:visible">
                 {card.text}
               </p>
             </div>
