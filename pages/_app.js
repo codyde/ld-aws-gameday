@@ -1,3 +1,4 @@
+"use client"
 //import "../styles/globals.css";
 import 'tailwindcss/tailwind.css';
 import { withLDProvider } from "launchdarkly-react-client-sdk";
@@ -17,7 +18,7 @@ function getUserId() {
   return id;
 }
 
-let id = getUserId();
+let id = getUserId()
 
 
 function MyApp({ Component, pageProps }) {
@@ -26,12 +27,23 @@ function MyApp({ Component, pageProps }) {
 
 export default withLDProvider({
   clientSideID: process.env.NEXT_PUBLIC_LD_CLIENT_KEY,
-  user: {
-    key: id,
-    custom: {
-      device: deviceType,
-      operatingSystem: osName,
+  context: {
+    "kind": "multi",
+    "user": {
+      "key": id,
     },
+    "device": {
+      "key": id,
+      "name": "device",
+      "deviceType": deviceType,
+      "os": osName
+    },
+    "location": {
+      "key": id,
+      "timezone": "PST",
+      "region": "US-West",
+      "office": "HQ"
+    }
   },
   options: {
     bootstrap: "localStorage",

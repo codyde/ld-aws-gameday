@@ -13,14 +13,14 @@ export default function Loginbox({ userObj, setUserObj }) {
   });
 
   async function setCurrLDUser() {
-    const obj = await LDClient.getUser();
+    const obj = await LDClient.getContext()
     return obj;
   }
 
   const submitUser = async (e) => {
     e.preventDefault();
     const lduser = await setCurrLDUser();
-    lduser.key = userState.username;
+    lduser.user.key = userState.username;
     await LDClient.identify(lduser);
     const response = await fetch(
       window.location.protocol +
@@ -45,7 +45,7 @@ export default function Loginbox({ userObj, setUserObj }) {
   };
 
   useEffect(() => {
-    setUserState(LDClient.getUser())
+    setUserState(LDClient.getContext())
   }, [])
 
   const handleChange = (e) => {
@@ -57,14 +57,14 @@ export default function Loginbox({ userObj, setUserObj }) {
   };
 
   async function setCurrLDUser() {
-    const obj = await LDClient.getUser();
+    const obj = await LDClient.getContext();
     return obj;
   }
 
   const submitLogout = async (e) => {
     e.preventDefault();
     const lduser = await setCurrLDUser();
-    lduser.key = "anonymous";
+    lduser.user.key = "anonymous";
     await LDClient.identify(lduser);
     await fetch(
       window.location.protocol +
