@@ -19,26 +19,28 @@ export default function Loginbox({ userObj, setUserObj }) {
 
   const submitUser = async (e) => {
     e.preventDefault();
+    setLoginState(false)
     const lduser = await setCurrLDUser();
+    await console.log(lduser)
     lduser.user.key = userState.username;
-    await LDClient.identify(lduser);
     const response = await fetch(
       window.location.protocol +
-      "//" +
-      window.location.host +
-      "/login", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(lduser)
-    }
+          "//" +
+          window.location.host +
+          "/login", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(lduser)
+          }
     )
+    console.log(response.json())
     await ls.remove('LD_User_Key')
     await ls.set('LD_User_Key', userState.username)
-    LDClient.track('userLogin', { customProperty: userState.username });
+    await LDClient.identify(lduser);
     toast.success("Your LaunchDarkly user is " + userState.username);
-    setUserObj(userState.username)
+    console.log("The updated user is: " + lduser.user.key);
     Array.from(document.querySelectorAll("input")).forEach(
       (input) => (input.value = "")
     );
@@ -63,22 +65,24 @@ export default function Loginbox({ userObj, setUserObj }) {
 
   const submitLogout = async (e) => {
     e.preventDefault();
-    const lduser = await setCurrLDUser();
-    lduser.user.key = "anonymous";
-    await LDClient.identify(lduser);
-    await fetch(
+    const response = await fetch(
       window.location.protocol +
-      "//" +
-      window.location.host +
-      "/logout", {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
+          "//" +
+          window.location.host +
+          "/logout", {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          }
     )
+    console.log(response)
+    const lduser = await setCurrLDUser();
+    setLoginState(true)
     await ls.remove('LD_User_Key')
-    LDClient.track('userClear', { customProperty: userState.username });
+    const id = getUserId()
+    lduser.user.key = id;
+    await LDClient.identify(lduser);
     toast.success("User has been cleared");
     Array.from(document.querySelectorAll("input")).forEach(
       (input) => (input.value = "")

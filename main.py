@@ -3,10 +3,12 @@ from flask_cors import CORS
 from flask import Flask,jsonify, request, render_template, session
 from flask_session import Session 
 import ldclient
+from ldclient import Context
 from ldclient.config import Config
 import os
 import eventlet
 import uuid
+import logging
 import boto3
 eventlet.monkey_patch()
 from config import ApplicationConfig
@@ -25,9 +27,8 @@ status_api = 'v2.3344'
 
 fallback = '{"dbhost": "db","dbname": "localdb","mode": "Local"}'
 
-user = {
-    "key": "anonymous"
-}
+context1 = Context.create("anonymous", "user")
+
 ldclient.set_config(Config(LD_KEY))
 
 
@@ -39,7 +40,7 @@ def default_path():
 @app.route("/login", methods=["POST"])
 def app_login():
     request_data = request.get_json()
-    session['key'] = request_data['key']
+    session['key'] = request_data['user']['key']
     status = {
         "status": session['key']+" has been logged in"
     }
@@ -48,6 +49,9 @@ def app_login():
 @app.route("/logout")
 def app_logout():
     session.pop('key', default=None)
+    ldclient.set_config(Config(LD_KEY))
+    context1 = Context.create("anonymous", "user")
+    ldclient.get().identify(context1)
     status = {
         "status":"logged out"
     }
@@ -56,11 +60,14 @@ def app_logout():
 @app.route("/status")
 def get_status():
     ldclient.set_config(Config(LD_KEY))
-    user = {
-        "key": 'anonymous'
-    }
-    ldclient.get().identify(user)
-    SiteStatus = ldclient.get().variation('siteRelease', user, False)
+    try: 
+        context1 = Context.create(session['key'], "user")
+        logging.info(context1)
+    except:
+        context1 = Context.create("anonymous", "user")
+        logging.info(context1)
+    ldclient.get().identify(context1)
+    SiteStatus = ldclient.get().variation('siteRelease', context1, False)
     print(SiteStatus)
     if SiteStatus == True: 
         data = {
@@ -77,17 +84,15 @@ def get_status():
 @app.route("/health")
 def get_api():
     ldclient.set_config(Config(LD_KEY))
-    try:
-        user = {
-            "key": session['key']
-        }
+    try: 
+        context1 = Context.create(session['key'], "user")
+        logging.info(context1)
     except:
-        user = {
-            "key": 'debuguser'
-        }
-    ldclient.get().identify(user)
-    dbinfo = ldclient.get().variation('dbDetails', user, fallback)
-    print(user)
+        context1 = Context.create("anonymous", "user")
+        logging.info(context1)
+    ldclient.get().identify(context1)
+    dbinfo = ldclient.get().variation('dbDetails', context1, fallback)
+    print(context1)
     try:
         if dbinfo['mode'] == "Cloud":
             stats = {
@@ -114,16 +119,14 @@ def get_api():
 @app.route("/datas", methods=["GET", "POST"])
 def thedata():
     ldclient.set_config(Config(LD_KEY))
-    try:
-        user = {
-            "key": session['key']
-        }
-    except: 
-        user = {
-            "key": 'debuguser'
-        }
-    ldclient.get().identify(user)
-    logstatus = ldclient.get().variation('logMode', user, 'default')
+    try: 
+        context1 = Context.create(session['key'], "user")
+        logging.info(context1)
+    except:
+        context1 = Context.create("anonymous", "user")
+        logging.info(context1)
+    ldclient.get().identify(context1)
+    logstatus = ldclient.get().variation('logMode', context1, 'default')
 
     ### DEV NOTES ###
 
@@ -133,7 +136,7 @@ def thedata():
     # Variation 1 (On)  - {"dbhost": "dynamodb","gamedaydb": "localdb","mode": "Cloud"}
     # Variation 2 (Off) - {"dbhost": "db","dbname": "localdb","mode": "Local"}
 
-    dbinfo = ldclient.get().variation('dbDetails', user, fallback)
+    dbinfo = ldclient.get().variation('dbDetails', context1, fallback)
     print(dbinfo)
     if dbinfo['dbhost'] == 'db':
         dummyData = [(
@@ -185,16 +188,14 @@ def thedata():
 
 @app.route("/teamdebug")
 def teamdebug():
-    try:
-        user = {
-            "key": session['key']
-        }
+    try: 
+        context1 = Context.create(session['key'], "user")
+        logging.info(context1)
     except:
-        user = {
-            "key": "debuguser"
-        }
-    ldclient.get().identify(user)
-    logstatus = ldclient.get().variation('logMode', user, 'default')
+        context1 = Context.create("anonymous", "user")
+        logging.info(context1)
+    ldclient.get().identify(context1)
+    logstatus = ldclient.get().variation('logMode', context1, 'default')
     ### DEV NOTES ###
 
     # We can hide components behind a feature flag, and use targeting rules to control which users can see them - like a debug menu for a database connection
